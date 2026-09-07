@@ -6,6 +6,7 @@
 
 :root {
   --page-plane:      #0d0d0d;
+  --surface-toolbar:  #141413;   /* topbar/footer — between page and panel */
   --surface-1:        #1a1a19;
   --surface-2:        #202020;
   --text-primary:     #ffffff;
@@ -43,6 +44,15 @@ html, body {
   font-size: 14px;
 }
 
+/* App-shell: the page terminates at a real footer instead of shrink-wrapping
+   to content and trailing into empty page-plane. */
+body {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+main.layout { flex: 1 0 auto; width: 100%; }
+
 /* Browser surfaces we didn't draw still carry the design. */
 ::selection { background: rgba(57,135,229,0.35); color: var(--text-primary); }
 
@@ -60,7 +70,7 @@ html, body {
 
 h1, h2 { margin: 0; font-weight: 600; letter-spacing: -0.01em; }
 h1 { font-size: 18px; }
-h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary); }
+h2 { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); }
 
 /* ---------------------------------------------------------- topbar */
 
@@ -68,12 +78,13 @@ h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: 
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 20px;
+  padding: 14px 20px;
   border-bottom: 1px solid var(--border);
-  background: var(--surface-1);
+  background: var(--surface-toolbar);
   position: sticky;
   top: 0;
   z-index: 10;
+  flex-shrink: 0;
 }
 .topbar-left { display: flex; align-items: center; gap: 8px; }
 .brand-dot {
@@ -105,12 +116,15 @@ h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: 
 .layout {
   display: grid;
   grid-template-columns: 2.1fr 1fr;
+  align-items: start;
   gap: 16px;
-  padding: 16px 20px 40px;
+  padding: 20px;
   max-width: 1400px;
   margin: 0 auto;
 }
 .panel-backtest { grid-column: 1 / -1; }
+.panel-signals { min-height: 360px; display: flex; flex-direction: column; }
+.panel-signals .table-scroll { flex: 1; }
 
 @media (max-width: 900px) {
   .layout { grid-template-columns: 1fr; }
@@ -120,11 +134,11 @@ h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: 
   background: var(--surface-1);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 16px;
+  padding: 20px;
 }
 .panel-head {
   display: flex; align-items: baseline; justify-content: space-between;
-  margin-bottom: 12px; gap: 12px;
+  margin-bottom: 16px; gap: 12px;
 }
 .panel-sub { font-size: 12px; color: var(--text-secondary); }
 .panel-head-controls { display: flex; gap: 8px; }
@@ -251,9 +265,31 @@ h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: 
   padding: 10px 12px;
 }
 .metric-tile .label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); }
-.metric-tile .value { font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; margin-top: 2px; }
+.metric-tile .value { font-size: 21px; font-weight: 600; font-variant-numeric: tabular-nums; margin-top: 3px; }
 .metric-tile .value.pos { color: var(--status-good); }
 .metric-tile .value.neg { color: var(--status-critical); }
 
 .chart-wrap { background: var(--surface-2); border-radius: 8px; padding: 8px; }
-#equity-chart { width: 100%; height: 260px; }
+#equity-chart { width: 100%; height: 300px; }
+
+/* ---------------------------------------------------------- footer */
+
+.site-footer {
+  flex-shrink: 0;
+  margin-top: 24px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  background: var(--surface-toolbar);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.site-footer .status-dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--status-good); margin-right: 6px;
+  box-shadow: 0 0 0 2px rgba(12,163,12,0.18);
+}
+.site-footer a { color: var(--text-secondary); text-decoration: none; }
+.site-footer a:hover { color: var(--text-primary); }

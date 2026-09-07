@@ -22,6 +22,11 @@ async function refreshStatus() {
         (s.last_close !== undefined ? `<span class="px">${fmt(s.last_close)}</span>` : "");
       el.appendChild(badge);
     }
+    const updatedEl = document.getElementById("footer-updated");
+    if (updatedEl) {
+      const now = new Date();
+      updatedEl.textContent = `Last updated ${now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`;
+    }
   } catch (e) {
     console.error("status refresh failed", e);
   }
