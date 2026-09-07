@@ -1,0 +1,12 @@
+Flask>=3.0
+gunicorn>=22.0; sys_platform != "win32"   # production server on Render/Railway (Linux); doesn't build on Windows
+pandas>=2.0
+numpy>=1.26
+python-dotenv>=1.0
+PyYAML>=6.0
+requests>=2.31
+yfinance>=0.2.40
+
+# Optional — only needed for the corresponding provider. Install manually
+# if you plan to use it (see README "Data providers" section):
+#   MetaTrader5>=5.0.45   (Windows only, requires a running MT5 terminal)

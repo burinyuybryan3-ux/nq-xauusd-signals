@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NQ / XAUUSD Signal Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="page">
+
+<header class="topbar">
+  <div class="topbar-left">
+    <span class="brand-dot"></span>
+    <h1>NQ / XAUUSD Signals</h1>
+  </div>
+  <div id="feed-badges" class="feed-badges"><!-- filled by JS --></div>
+</header>
+
+<main class="layout">
+
+  <!-- ============ Active signals ============ -->
+  <section class="panel panel-signals">
+    <div class="panel-head">
+      <h2>Active Signals</h2>
+      <div class="panel-head-controls">
+        <select id="filter-symbol" class="select">
+          <option value="">All symbols</option>
+          {% for s in symbols %}<option value="{{ s }}">{{ s }}</option>{% endfor %}
+        </select>
+        <button id="refresh-signals" class="btn-icon" title="Refresh" aria-label="Refresh signals">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="table-scroll">
+      <table class="data-table" id="signals-table">
+        <thead>
+          <tr>
+            <th>Status</th><th>Symbol</th><th>Side</th><th>Strategy</th>
+            <th>Entry</th><th>Stop</th><th>Target</th><th>RR</th><th>Age</th><th>Reason</th>
+          </tr>
+        </thead>
+        <tbody id="signals-tbody">
+          <tr><td colspan="10" class="empty-row">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ Strategy toggles ============ -->
+  <section class="panel panel-strategies">
+    <div class="panel-head"><h2>Strategies</h2></div>
+    <div id="strategies-list" class="strategies-list"><!-- filled by JS --></div>
+  </section>
+
+  <!-- ============ Backtest ============ -->
+  <section class="panel panel-backtest">
+    <div class="panel-head"><h2>Backtest</h2><span class="panel-sub">validate before you trust it</span></div>
+
+    <form id="backtest-form" class="backtest-form">
+      <label class="field">
+        <span>Strategy</span>
+        <select id="bt-strategy" class="select"></select>
+      </label>
+      <label class="field">
+        <span>Symbol</span>
+        <select id="bt-symbol" class="select">
+          {% for s in symbols %}<option value="{{ s }}">{{ s }}</option>{% endfor %}
+        </select>
+      </label>
+      <label class="field">
+        <span>Timeframe</span>
+        <select id="bt-timeframe" class="select">
+          {% for tf in timeframes %}<option value="{{ tf }}" {% if tf=='M15' %}selected{% endif %}>{{ tf }}</option>{% endfor %}
+        </select>
+      </label>
+      <label class="field">
+        <span>Bars</span>
+        <input id="bt-count" class="select" type="number" value="1500" min="100" max="5000">
+      </label>
+      <button type="submit" class="btn-primary" id="bt-run">Run backtest</button>
+    </form>
+
+    <div id="bt-status" class="bt-status"></div>
+
+    <div class="bt-results" id="bt-results" hidden>
+      <div class="metrics-grid" id="bt-metrics"><!-- filled by JS --></div>
+      <div class="chart-wrap">
+        <div id="equity-chart"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

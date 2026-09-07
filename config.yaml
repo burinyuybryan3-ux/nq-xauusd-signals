@@ -1,0 +1,74 @@
+# NQ / XAUUSD Signal Dashboard — configuration
+#
+# environment: "local" (MT5 available) or "cloud" (MT5 unavailable, e.g. Render/Railway).
+# This only changes the default live_provider_priority order below — you can
+# override live_provider_priority directly and ignore this if you prefer.
+environment: local
+
+# Logical symbol -> per-provider ticker mapping. This is the ONLY place
+# broker/vendor-specific symbol names live. Update `mt5:` to match whatever
+# your broker actually calls the Nasdaq-100 CFD (NAS100, US100, USTEC,
+# NDX100, ... — check your MT5 Market Watch window).
+symbols:
+  NQ:
+    mt5: "NAS100"
+    oanda: "NAS100_USD"
+    dukascopy: "USA100.IDX/USD"
+    twelvedata: "NDX"
+    yfinance: "NQ=F"
+    tick_size: 0.25
+  XAUUSD:
+    mt5: "XAUUSD"
+    oanda: "XAU_USD"
+    dukascopy: "XAUUSD"
+    twelvedata: "XAU/USD"
+    yfinance: "GC=F"
+    tick_size: 0.01
+
+data:
+  # Tried in order for LIVE polling (signal engine). First success wins.
+  live_provider_priority: ["mt5", "oanda"]
+  # Tried in order for HISTORICAL data (backtester), and as a fallback
+  # for live polling if nothing in live_provider_priority works.
+  historical_provider_priority: ["dukascopy", "twelvedata", "yfinance"]
+  poll_interval_seconds: 60
+  cache_max_age_minutes: 5
+
+# What the scheduler actually polls, and on what timeframe.
+watch:
+  - symbol: NQ
+    timeframe: M15
+  - symbol: XAUUSD
+    timeframe: M15
+
+strategies:
+  enabled:
+    - dummy_sma
+
+validation:
+  max_entry_distance_ticks: 50
+  max_age_minutes: 30
+  noise_risk_atr_mult: 0.25
+  dedup_window_minutes: 240
+
+# Lightweight session-gap guard — not a full exchange calendar, just enough
+# to avoid firing/backtesting across known closed windows.
+sessions:
+  XAUUSD:
+    closed_weekdays: [5]         # Saturday (UTC) — spot gold is closed
+    daily_close_utc: "22:00"     # brief daily rollover gap
+    daily_close_window_minutes: 30
+  NQ:
+    closed_weekdays: [6]         # Sunday (UTC) before the week's session opens
+
+display:
+  timezone: "America/Toronto"
+
+backtest:
+  starting_equity_r: 0
+  slippage_ticks: 1
+  commission_per_trade: 0
+
+alerts:
+  enabled: false
+  webhook_url: ""   # Discord or Telegram-compatible webhook URL
