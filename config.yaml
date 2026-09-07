@@ -1,8 +1,9 @@
 # NQ / XAUUSD Signal Dashboard — configuration
 #
 # environment: "local" (MT5 available) or "cloud" (MT5 unavailable, e.g. Render/Railway).
-# This only changes the default live_provider_priority order below — you can
-# override live_provider_priority directly and ignore this if you prefer.
+# This is a label for humans only — nothing in the code branches on it. The
+# thing that actually matters is `data.live_provider_priority` below; change
+# that directly when moving between local and cloud (see README > Deploying).
 environment: local
 
 # Logical symbol -> per-provider ticker mapping. This is the ONLY place
